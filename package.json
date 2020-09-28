@@ -1,0 +1,116 @@
+{
+  "name": "@ices/shared-utils-node",
+  "version": "0.1.0",
+  "description": "Shared utils for ices module.",
+  "main": "lib/index.js",
+  "engines": {
+    "node": ">=8.3"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "lint": "eslint . --fix",
+    "format": "prettier --config .prettierrc.js -w '**/*.js'",
+    "build": "npm run format && babel src -d lib -s inline",
+    "test": "npm run build && jest --passWithNoTests",
+    "test:watch": "npm run build && jest --watch --passWithNoTests",
+    "coverage:view": "open-cli coverage/lcov-report/index.html",
+    "release": "cross-env SKIP_TEST_COVERAGE=true npm run test && release-it"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.11.2",
+    "@vue/cli-shared-utils": "^4.5.6",
+    "core-js": "^3.6.5",
+    "minimist": "^1.2.5",
+    "serve": "^11.3.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/plugin-transform-runtime": "^7.11.5",
+    "@babel/preset-env": "^7.11.5",
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "@ices/check-dependency-engines": "^1.2.2",
+    "@release-it/conventional-changelog": "^2.0.0",
+    "babel-eslint": "^10.1.0",
+    "cross-env": "^7.0.2",
+    "eslint": "^7.9.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-jest": "^24.0.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "husky": "^4.3.0",
+    "jest": "^26.4.2",
+    "lint-staged": "^10.4.0",
+    "open-cli": "^6.0.1",
+    "prettier": "^2.1.2",
+    "release-it": "^14.0.3"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged",
+      "post-merge": "npm install",
+      "pre-push": "npm run lint"
+    }
+  },
+  "lint-staged": {
+    "**/*.js": [
+      "npm run lint"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "release-it": {
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": "angular",
+        "infile": "CHANGELOG.md"
+      }
+    },
+    "npm": {
+      "timeout": 30
+    },
+    "git": {
+      "commitMessage": "chore: release v${version}",
+      "tagName": "v${version}",
+      "tagAnnotation": "Release v${version}"
+    },
+    "github": {
+      "timeout": 30,
+      "releaseName": "Release v${version}"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/icesjs/shared-utils-node.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "keywords": [
+    "ices",
+    "utils"
+  ],
+  "author": {
+    "name": "Stone",
+    "email": "star2018@outlook.com",
+    "url": "https://github.com/icesjs"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/icesjs/shared-utils-node/issues"
+  },
+  "homepage": "https://github.com/icesjs/shared-utils-node#readme"
+}
