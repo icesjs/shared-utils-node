@@ -77,6 +77,18 @@
         "preset": "angular",
         "infile": "CHANGELOG.md"
       }
+    },
+    "npm": {
+      "timeout": 30
+    },
+    "git": {
+      "commitMessage": "chore: release v${version}",
+      "tagName": "v${version}",
+      "tagAnnotation": "Release v${version}"
+    },
+    "github": {
+      "timeout": 30,
+      "releaseName": "Release v${version}"
     }
   },
   "repository": {
