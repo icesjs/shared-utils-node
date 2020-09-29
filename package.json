@@ -1,7 +1,7 @@
 {
   "name": "@ices/shared-utils-node",
   "version": "0.1.1",
-  "description": "Shared utils for ices module.",
+  "description": "Shared utils for ices node module.",
   "main": "lib/index.js",
   "engines": {
     "node": ">=8.3"
@@ -12,19 +12,18 @@
   ],
   "scripts": {
     "lint": "eslint . --fix",
-    "format": "prettier --config .prettierrc.js -w '**/*.js'",
-    "build": "npm run format && babel src -d lib -s inline",
+    "format": "prettier --config .prettierrc.js --write '**/*.js'",
+    "build": "babel src -d lib -s inline",
     "test": "npm run build && jest --passWithNoTests",
-    "test:watch": "npm run build && jest --watch --passWithNoTests",
     "coverage:view": "open-cli coverage/lcov-report/index.html",
-    "release": "cross-env SKIP_TEST_COVERAGE=true npm run test && release-it"
+    "release": "rimraf lib && cross-env SKIP_TEST_COVERAGE=true npm run test && release-it"
   },
   "dependencies": {
     "@babel/runtime": "^7.11.2",
-    "@vue/cli-shared-utils": "^4.5.6",
     "core-js": "^3.6.5",
+    "dotenv": "^8.2.0",
     "minimist": "^1.2.5",
-    "serve": "^11.3.2"
+    "rimraf": "^3.0.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.11.6",
@@ -33,7 +32,6 @@
     "@babel/preset-env": "^7.11.5",
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
-    "@ices/check-dependency-engines": "^1.2.2",
     "@release-it/conventional-changelog": "^2.0.0",
     "babel-eslint": "^10.1.0",
     "cross-env": "^7.0.2",
@@ -57,8 +55,7 @@
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "lint-staged",
-      "post-merge": "npm install",
-      "pre-push": "npm run lint"
+      "post-merge": "npm install"
     }
   },
   "lint-staged": {
@@ -69,7 +66,8 @@
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
-    ]
+    ],
+    "rules": {}
   },
   "release-it": {
     "plugins": {
@@ -79,6 +77,7 @@
       }
     },
     "npm": {
+      "publish": true,
       "timeout": 30
     },
     "git": {

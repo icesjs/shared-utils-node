@@ -2,7 +2,7 @@
 # @ices/shared-utils-node
 
 <p>
-  Shared utils for ices.
+  Shared utils for ices node module.
 </p>
 
 # Install
