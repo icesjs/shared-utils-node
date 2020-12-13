@@ -1,6 +1,6 @@
 {
   "name": "@ices/shared-utils-node",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Shared utils for ices node module.",
   "main": "index.js",
   "engines": {
