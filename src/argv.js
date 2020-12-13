@@ -6,6 +6,9 @@
 exports.getProcessArgs = (setup) => {
   const rawArgv = process.argv.slice(2)
   const args = require('minimist')(rawArgv, setup)
+  if (!args._) {
+    args._ = []
+  }
   // rawArgv是原始的命令行参数数组，所有值都未经数据类型格式处理
   return { args, rawArgv }
 }

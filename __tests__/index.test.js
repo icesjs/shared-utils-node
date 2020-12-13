@@ -1,5 +1,5 @@
 //
 test('test export all modules', () => {
-  const { parseProcessArgs } = require('../lib/index')
+  const { parseProcessArgs } = require('../index')
   expect(parseProcessArgs).toBe(require('../lib/argv').parseProcessArgs)
 })

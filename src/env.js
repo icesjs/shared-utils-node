@@ -1,58 +1,78 @@
+// 默认的环境变量数据转换函数
+function defaultEnvParser(val) {
+  let parsedVal
+  if (val === 'undefined') {
+    parsedVal = undefined
+  } else if (val === 'null') {
+    parsedVal = null
+  } else if (/^(true|false)$/.test(val)) {
+    // 为true或false的字符串，转换为布尔值
+    parsedVal = RegExp.$1 === 'true'
+  } else if (/^-?(?:\d+\.)?\d+$/.test(val)) {
+    // 满足完整数值格式的字符串，转换为数值类型
+    parsedVal = +val
+  } else {
+    parsedVal = val.trim()
+  }
+  return parsedVal
+}
+
+// 匹配vue app环境变量数据
+function matchVueAppDataKey(key) {
+  return /^(vue_)?(app_.+)$/i.exec(key)
+}
+
 /**
- * 获取进程环境变量信息
- * @param parser  (val, key, env) => any
+ * 获取进程环境变量信息（包含普通环境变量与应用数据变量）
+ * @param parser (val) => any
  * @returns {{}}
  */
-exports.parseProcessEnv = (parser) => {
+exports.parseProcessEnv = (parser = defaultEnvParser) => {
   const env = {}
   // 转换数据类型
   for (const [key, val] of Object.entries(process.env)) {
-    if (val === 'undefined') {
-      env[key] = undefined
-    } else if (val === 'null') {
-      env[key] = null
-    } else if (/^(true|false)$/.test(val)) {
-      // 为true或false的字符串，转换为布尔值
-      env[key] = RegExp.$1 === 'true'
-    } else if (/^-?(?:\d+\.)?\d+$/.test(val)) {
-      // 满足完整数值格式的字符串，转换为数值类型
-      env[key] = +val
-    } else {
-      env[key] = val.trim()
-    }
-    if (typeof parser === 'function') {
-      const res = parser(val, key, env)
-      if (res !== undefined) {
-        env[key] = res
-      }
+    env[key] = parser(val)
+  }
+  return env
+}
+
+/**
+ * 解析构建环境变量（不包含应用数据变量）
+ * @param parser (val)=>any
+ * @returns {{}}
+ */
+exports.parseBuildEnv = (parser = defaultEnvParser) => {
+  const env = {}
+  for (const [key, val] of Object.entries(process.env)) {
+    if (!matchVueAppDataKey(key)) {
+      env[key] = parser(val)
     }
   }
   return env
 }
 
 /**
- * 解析Vue应用环境变量数据
- * @returns {{data: {}, env: {}}}
+ * 从环境变量中解析Vue应用数据
+ * @param parser (val)=>any
+ * @returns {{}}
  */
-exports.parseVueAppEnv = () => {
+exports.parseVueAppData = (parser = defaultEnvParser) => {
   const data = {}
-  const env = exports.parseProcessEnv((val, key, env) => {
-    const matched = /^(vue_)?(app_.+)$/i.exec(key)
+  for (const [key, val] of Object.entries(process.env)) {
+    const matched = matchVueAppDataKey(key)
     if (matched) {
-      const lowerKey = key.toLowerCase()
-      const upperKey = key.toUpperCase()
-      env[lowerKey] = env[upperKey] = env[key]
-      data[lowerKey] = data[upperKey] = env[key]
+      const parsedVal = parser(val)
+      data[key] = data[key.toLowerCase()] = data[key.toUpperCase()] = parsedVal
       if (matched[1]) {
         // 去掉vue_前缀保存一份数据
         const dataKey = matched[2]
         data[dataKey] = data[dataKey.toLowerCase()] = data[
           dataKey.toUpperCase()
-        ] = env[key]
+        ] = parsedVal
       }
     }
-  })
-  return { env, data }
+  }
+  return data
 }
 
 /**

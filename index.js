@@ -1,8 +1,10 @@
 // 导出所有的模块
-for (const m of require('fs').readdirSync(__dirname)) {
-  if (m !== 'index.js') {
-    Object.assign(exports, require(`./${m}`))
-  }
+const fs = require('fs')
+const path = require('path')
+const lib = path.join(__dirname, 'lib')
+
+for (const m of fs.readdirSync(lib)) {
+  Object.assign(exports, require(path.join(lib, m)))
 }
 
 // 如果不导入所有的模块，可以通过路径来导入需要用到的模块，如：
